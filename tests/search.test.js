@@ -43,3 +43,21 @@ for (const { result, input, lang } of fixtures) {
     expect(results[0][lang]).toBe(result);
   });
 }
+
+test("order-based searches", () => {
+  const store = useDictionaryStore();
+  store.setLocale("ja");
+  store.updateSearchQuery("神");
+  store.maxWords = 1000;
+
+  const results = store.searchResults;
+  const resultTitles = results.map(word => word.ja);
+
+  expect(resultTitles.indexOf("「神骨の蛇姫」")).toBeLessThan(resultTitles.indexOf("エゲリア"));
+});
+
+test("search words including 'ヴァヴィヴヴェヴォ' by 'ばびぶべぼ' (2)", () => {
+  const results = search("べりみる");
+  expect(results).toHaveLength(1);
+  expect(results[0].ja).toBe("ヴェリミル");
+});
